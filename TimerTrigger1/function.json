@@ -10,14 +10,14 @@
       "name": "inputBlob",
       "direction": "in",
       "type": "blob",
-      "path": "incontainer/{name}",
+      "path": "redisexport/{name}",
       "connection": "bnkredispoccus01_STORAGE"
     },
     {
       "name": "outputBlob",
       "direction": "out",
       "type": "blob",
-      "path": "outcontainer/{rand-guid}",
+      "path": "redisimport/{name}",
       "connection": "bnkredispoceus01_STORAGE"
     }
 

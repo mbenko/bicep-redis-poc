@@ -1,0 +1,11 @@
+{
+  "bindings": [
+    {
+      "name": "myBlob",
+      "type": "blobTrigger",
+      "direction": "in",
+      "path": "redisexport/{name}",
+      "connection": "bnkredispoccus01_STORAGE"
+    }
+  ]
+}
