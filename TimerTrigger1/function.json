@@ -1,0 +1,25 @@
+{
+  "bindings": [
+    {
+      "name": "myTimer",
+      "type": "timerTrigger",
+      "direction": "in",
+      "schedule": "0 */1 * * * *"
+    },
+    {
+      "name": "inputBlob",
+      "direction": "in",
+      "type": "blob",
+      "path": "incontainer/{name}",
+      "connection": "bnkredispoccus01_STORAGE"
+    },
+    {
+      "name": "outputBlob",
+      "direction": "out",
+      "type": "blob",
+      "path": "outcontainer/{rand-guid}",
+      "connection": "bnkredispoceus01_STORAGE"
+    }
+
+  ]
+}
