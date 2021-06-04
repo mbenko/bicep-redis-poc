@@ -1,0 +1,205 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "functions": [],
+  "variables": {
+    "appName": "bnkredispoc",
+    "fnLoc": "CentralUs",
+    "drLoc": "EastUS",
+    "storageNameCUS": "[format('{0}cus01', variables('appName'))]",
+    "storageNameEUS": "[format('{0}eus01', variables('appName'))]",
+    "hostingPlanName": "[format('{0}-plan', variables('appName'))]",
+    "appInsightsName": "[format('{0}-ai', variables('appName'))]",
+    "fnAppName": "[format('{0}-fn', variables('appName'))]",
+    "redisCUS": "[format('{0}-redispoc-cus', variables('appName'))]",
+    "redisEUS": "[format('{0}-redispoc-eus', variables('appName'))]",
+    "SRC_DATABASE_NAME": "default",
+    "DEST_DATABASE_NAME": "default"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2021-04-01",
+      "name": "[variables('storageNameCUS')]",
+      "location": "[variables('fnLoc')]",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "kind": "StorageV2",
+      "properties": {
+        "supportsHttpsTrafficOnly": true,
+        "encryption": {
+          "services": {
+            "file": {
+              "keyType": "Account",
+              "enabled": true
+            },
+            "blob": {
+              "keyType": "Account",
+              "enabled": true
+            }
+          },
+          "keySource": "Microsoft.Storage"
+        },
+        "accessTier": "Hot"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2021-04-01",
+      "name": "[variables('storageNameEUS')]",
+      "location": "[variables('drLoc')]",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "kind": "StorageV2",
+      "properties": {
+        "supportsHttpsTrafficOnly": true,
+        "encryption": {
+          "services": {
+            "file": {
+              "keyType": "Account",
+              "enabled": true
+            },
+            "blob": {
+              "keyType": "Account",
+              "enabled": true
+            }
+          },
+          "keySource": "Microsoft.Storage"
+        },
+        "accessTier": "Hot"
+      }
+    },
+    {
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02-preview",
+      "name": "[variables('appInsightsName')]",
+      "location": "[variables('fnLoc')]",
+      "kind": "web",
+      "properties": {
+        "Application_Type": "web",
+        "publicNetworkAccessForIngestion": "Enabled",
+        "publicNetworkAccessForQuery": "Enabled"
+      },
+      "tags": {
+        "[format('hidden-link:/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Web/sites/{2}', subscription().id, resourceGroup().name, variables('fnAppName'))]": "Resource"
+      }
+    },
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2020-10-01",
+      "name": "[variables('hostingPlanName')]",
+      "location": "[variables('fnLoc')]",
+      "sku": {
+        "name": "Y1",
+        "tier": "Dynamic"
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2021-01-01",
+      "name": "[variables('fnAppName')]",
+      "location": "[variables('fnLoc')]",
+      "kind": "functionapp",
+      "properties": {
+        "httpsOnly": true,
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+        "clientAffinityEnabled": true,
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(resourceId('Microsoft.Insights/components', variables('appInsightsName'))).InstrumentationKey]"
+            },
+            {
+              "name": "AzureWebJobsStorage",
+              "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', variables('storageNameCUS'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageNameCUS')), '2021-04-01').keys[0].value)]"
+            },
+            {
+              "name": "bnkredispoccus01_STORAGE",
+              "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', variables('storageNameCUS'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageNameCUS')), '2021-04-01').keys[0].value)]"
+            },
+            {
+              "name": "bnkredispoceus01_STORAGE",
+              "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', variables('storageNameEUS'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageNameEUS')), '2021-04-01').keys[0].value)]"
+            },
+            {
+              "name": "SRC_CLUSTER_NAME",
+              "value": "[variables('redisCUS')]"
+            },
+            {
+              "name": "DEST_CLUSTER_NAME",
+              "value": "[variables('redisEUS')]"
+            },
+            {
+              "name": "SRC_REDIS_DB_NAME",
+              "value": "[variables('SRC_DATABASE_NAME')]"
+            },
+            {
+              "name": "DEST_REDIS_DB_NAME",
+              "value": "[variables('DEST_DATABASE_NAME')]"
+            },
+            {
+              "name": "SRC_EXPORT_PATH",
+              "value": "[format('{0}/databases/{1}/export?api-version=2021-03-01', resourceId('Microsoft.Cache/redisEnterprise', variables('redisCUS')), variables('SRC_DATABASE_NAME'))]"
+            },
+            {
+              "name": "DEST_IMPORT_PATH",
+              "value": "[format('{0}/databases/{1}/import?api-version=2021-03-01', resourceId('Microsoft.Cache/redisEnterprise', variables('redisEUS')), variables('DEST_DATABASE_NAME'))]"
+            },
+            {
+              "name": "FUNCTIONS_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "FUNCTIONS_WORKER_RUNTIME",
+              "value": "node"
+            },
+            {
+              "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+              "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', variables('storageNameCUS'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageNameCUS')), '2021-04-01').keys[0].value)]"
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Insights/components', variables('appInsightsName'))]",
+        "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+        "[resourceId('Microsoft.Cache/redisEnterprise', variables('redisCUS'))]",
+        "[resourceId('Microsoft.Cache/redisEnterprise', variables('redisEUS'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageNameCUS'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageNameEUS'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Cache/redisEnterprise",
+      "apiVersion": "2021-03-01",
+      "name": "[variables('redisCUS')]",
+      "location": "[variables('fnLoc')]",
+      "sku": {
+        "name": "Enterprise_E10",
+        "capacity": 2
+      }
+    },
+    {
+      "type": "Microsoft.Cache/redisEnterprise",
+      "apiVersion": "2021-03-01",
+      "name": "[variables('redisEUS')]",
+      "location": "[variables('drLoc')]",
+      "sku": {
+        "name": "Enterprise_E10",
+        "capacity": 2
+      }
+    }
+  ],
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.3.126.58533",
+      "templateHash": "11335642517877639629"
+    }
+  }
+}

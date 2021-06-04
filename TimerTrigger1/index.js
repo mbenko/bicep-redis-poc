@@ -5,13 +5,13 @@ module.exports = async function (context, myTimer) {
     {
         context.log('JavaScript is running late!');
     }
-    context.log('JavaScript timer trigger function started!', timeStamp);   
+    context.log('---> JavaScript timer trigger function started!', timeStamp);   
 
     // REST Call to export from Redis
-    ExportRedis(context);
     context.log("HostURL: " + process.env.SRC_CLUSTER_NAME);
     context.log("Path:    " + process.env.SRC_EXPORT_PATH)
-
+    ExportRedis(context);
+    
     // Copy Blob from export to 2nd storage account
     context.bindings.outBlob = context.bindings.inBlob;
     context.done();
