@@ -1,13 +1,14 @@
 
 var appName = 'bnkredispoc'
 var fnLoc = 'CentralUs'
+var drLoc = 'EastUS'
 var storageNameCUS = '${appName}cus01'
 var storageNameEUS = '${appName}eus01'
 var hostingPlanName = '${appName}-plan'
 var appInsightsName = '${appName}-ai'
 var fnAppName = '${appName}-fn'
-var redisCUS = '${appName}-redis-cus'
-var redisEUS = '${appName}-redis-eus'
+var redisCUS = '${appName}-redispoc-cus'
+var redisEUS = '${appName}-redispoc-eus'
 var SRC_DATABASE_NAME = 'default'
 var DEST_DATABASE_NAME = 'default'
 
@@ -40,7 +41,7 @@ resource storageCUS 'Microsoft.Storage/storageAccounts@2021-04-01' = {
 
 resource storageEUS 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   name: storageNameEUS
-  location: 'EastUS' 
+  location: drLoc 
   sku: {
     name: 'Standard_LRS'
     tier: 'Standard'
@@ -175,7 +176,7 @@ resource redis1 'Microsoft.Cache/redisEnterprise@2021-03-01' = {
 
 resource redis2 'Microsoft.Cache/redisEnterprise@2021-03-01' = {
   name: redisEUS
-  location: fnLoc
+  location: drLoc
   sku: {
     name: 'Enterprise_E10'
     capacity: 2

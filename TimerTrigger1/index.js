@@ -8,16 +8,16 @@ module.exports = async function (context, myTimer) {
     context.log('JavaScript timer trigger function started!', timeStamp);   
 
     // REST Call to export from Redis
-    //ExportRedis(context);
+    ExportRedis(context);
     context.log("HostURL: " + process.env.SRC_CLUSTER_NAME);
     context.log("Path:    " + process.env.SRC_EXPORT_PATH)
 
     // Copy Blob from export to 2nd storage account
-    // context.bindings.outBlob = context.bindings.inBlob;
+    context.bindings.outBlob = context.bindings.inBlob;
     context.done();
 
     // Call FN to import to Redis
-    //ImportRedis(context)
+    ImportRedis(context)
 
     context.log('JavaScript timer trigger function complete!', timeStamp);   
 };
@@ -37,6 +37,7 @@ function ExportRedis(context) {
     //JSON_BODY="{ \"sasUri\": \"${SAS_URI:?};${SRC_ACCOUNT_ACCESS_KEY:?}\" }"
     //
     //az rest -m POST -u https://management.azure.com/subscriptions/${SUBSCRIPTION_ID:?}/resourceGroups/${RESOURCE_GROUP_NAME:?}/providers/Microsoft.Cache/redisEnterprise/${SRC_CLUSTER_NAME:?}/databases/${SRC_DATABASE_NAME:?}/export?api-version=2021-03-01 -b "$JSON_BODY"   
+
     var hostUrl = "https://management.azure.com";
 
     const options = {
