@@ -13,7 +13,7 @@ module.exports = function(context, req) {
 };
 
 function generateSasToken(context, container, blobName, permissions) {
-    var connString = process.env.AzureWebJobsStorage;
+    var connString = process.env.SRC_STORAGE;
     var blobService = azure.createBlobService(connString);
 
     // Create a SAS token that expires in an hour

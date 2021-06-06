@@ -2,6 +2,7 @@
 var count = 0;
 const azure = require('azure-storage');
 const https = require('https');
+const redis = require('redis');
 
 module.exports = async function (context, req) {
     var timeStamp = new Date().toISOString();
@@ -33,8 +34,7 @@ function ExportRedis(context) {
     }); 
 
     const options = {
-        hostname: hos
-        tUrl,
+        hostname: hostUrl,
         port: 443,
         method: 'POST',
         headers: {
@@ -57,7 +57,8 @@ function ExportRedis(context) {
     })
 
     req.on('error', error => {
-        context.log(error)
+        console.log(error);
+        context.log(error);
     })
       
     req.write(data)

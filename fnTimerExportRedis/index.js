@@ -18,7 +18,7 @@ module.exports = async function (context, myTimer) {
     // REST Call to export from Redis
     context.log("--> HostURL: " + process.env.SRC_CLUSTER_NAME);
     context.log("--> Path:    " + process.env.SRC_EXPORT_PATH)
-    ExportRedis(context);
+    // ExportRedis(context);
     
     // Copy Blob from export to 2nd storage account
     //context.bindings.outBlob = context.bindings.inBlob;
