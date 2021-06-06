@@ -119,11 +119,11 @@
               "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', variables('storageNameCUS'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageNameCUS')), '2021-04-01').keys[0].value)]"
             },
             {
-              "name": "bnkredispoccus01_STORAGE",
+              "name": "SRC_STORAGE",
               "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', variables('storageNameCUS'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageNameCUS')), '2021-04-01').keys[0].value)]"
             },
             {
-              "name": "bnkredispoceus01_STORAGE",
+              "name": "DEST_STORAGE",
               "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', variables('storageNameEUS'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageNameEUS')), '2021-04-01').keys[0].value)]"
             },
             {
@@ -199,7 +199,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "11335642517877639629"
+      "templateHash": "2398298083068156246"
     }
   }
 }

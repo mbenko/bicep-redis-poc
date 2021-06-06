@@ -1,0 +1,19 @@
+{
+  "bindings": [
+    {
+      "name": "srcBlob",
+      "type": "blobTrigger",
+      "direction": "in",
+      "path": "exports/{name}",
+      "connection": "SRC_STORAGE"
+    },
+    {
+      "name": "destBlob",
+      "type": "blob",
+      "direction": "out",
+      "path": "imports/{name}",
+      "connection": "DEST_STORAGE"
+    }
+
+  ]
+}

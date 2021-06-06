@@ -7,8 +7,8 @@ var storageNameEUS = '${appName}eus01'
 var hostingPlanName = '${appName}-plan'
 var appInsightsName = '${appName}-ai'
 var fnAppName = '${appName}-fn'
-var redisCUS = '${appName}-redispoc-cus'
-var redisEUS = '${appName}-redispoc-eus'
+var redisCUS = '${appName}-cus'
+var redisEUS = '${appName}-eus'
 var SRC_DATABASE_NAME = 'default'
 var DEST_DATABASE_NAME = 'default'
 
@@ -109,11 +109,11 @@ resource fnApp 'Microsoft.Web/sites@2021-01-01' = {
           value: 'DefaultEndpointsProtocol=https;AccountName=${storageCUS.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(storageCUS.id, storageCUS.apiVersion).keys[0].value}'
         }
         {
-          name: 'bnkredispoccus01_STORAGE'
+          name: 'SRC_STORAGE'
           value: 'DefaultEndpointsProtocol=https;AccountName=${storageCUS.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(storageCUS.id, storageCUS.apiVersion).keys[0].value}'
         }
         {
-          name: 'bnkredispoceus01_STORAGE'
+          name: 'DEST_STORAGE'
           value: 'DefaultEndpointsProtocol=https;AccountName=${storageEUS.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(storageEUS.id, storageEUS.apiVersion).keys[0].value}'
         }
         {
@@ -134,11 +134,11 @@ resource fnApp 'Microsoft.Web/sites@2021-01-01' = {
         }
         {
           name: 'SRC_EXPORT_PATH'
-          value: '${redis1.id}/databases/${SRC_DATABASE_NAME}/export?api-version=2021-03-01'
+          value: '${my_redis.id}/databases/${SRC_DATABASE_NAME}/export?api-version=2021-03-01'
         }
         {
           name: 'DEST_IMPORT_PATH'
-          value: '${redis2.id}/databases/${DEST_DATABASE_NAME}/import?api-version=2021-03-01'
+          value: '${dr_redis.id}/databases/${DEST_DATABASE_NAME}/import?api-version=2021-03-01'
         }
         {
           'name': 'FUNCTIONS_EXTENSION_VERSION'
@@ -165,16 +165,22 @@ resource fnApp 'Microsoft.Web/sites@2021-01-01' = {
   ]
 }
 
-resource redis1 'Microsoft.Cache/redisEnterprise@2021-03-01' = {
+resource my_redis 'Microsoft.Cache/redisEnterprise@2021-03-01' = {
   name: redisCUS
   location: fnLoc
   sku: {
     name: 'Enterprise_E10'
     capacity: 2
   } 
+  
 }
 
-resource redis2 'Microsoft.Cache/redisEnterprise@2021-03-01' = {
+resource my_db 'Microsoft.Cache/redisEnterprise/databases@2021-03-01' = {
+  name: SRC_DATABASE_NAME
+  parent: my_redis
+}
+
+resource dr_redis 'Microsoft.Cache/redisEnterprise@2021-03-01' = {
   name: redisEUS
   location: drLoc
   sku: {
@@ -182,3 +188,9 @@ resource redis2 'Microsoft.Cache/redisEnterprise@2021-03-01' = {
     capacity: 2
   } 
 }
+
+resource dr_db 'Microsoft.Cache/redisEnterprise/databases@2021-03-01' = {
+  name: DEST_DATABASE_NAME
+  parent: dr_redis
+}
+

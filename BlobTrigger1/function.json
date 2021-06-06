@@ -5,7 +5,7 @@
       "type": "blobTrigger",
       "direction": "in",
       "path": "redisexport/{name}",
-      "connection": "bnkredispoccus01_STORAGE"
+      "connection": "SRC_STORAGE"
     }
   ]
 }
