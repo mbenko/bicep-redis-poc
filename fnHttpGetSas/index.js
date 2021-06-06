@@ -9,6 +9,10 @@ module.exports = function(context, req) {
 
     context.log ("---> fnHttpGetSas() :", sas.uri)
     
+    context.res = {
+        status: 200, /* Defaults to 200 */
+        body: sas.uri
+    };
     context.done();
 };
 
