@@ -2,7 +2,6 @@
 var count = 0;
 const azure = require('azure-storage');
 const https = require('https');
-const redis = require('redis');
 
 module.exports = async function (context, req) {
     var timeStamp = new Date().toISOString();
@@ -53,7 +52,7 @@ function ExportRedis(context) {
     })
     
     req.on('success', rc => {
-        context.log("Complete!")
+        context.log('['+count+']---> fnHttpExportRedis() : Request SUCCESS Complete!')
     })
 
     req.on('error', error => {
@@ -63,6 +62,7 @@ function ExportRedis(context) {
       
     req.write(data)
     req.end()
+    context.log('['+count+']---> fnHttpExportRedis() - http Request sent');
 }
 
 // Create a service SAS for a blob container

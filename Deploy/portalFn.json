@@ -1,0 +1,269 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sites_bnkfntest2_name": {
+            "defaultValue": "bnkfntest2",
+            "type": "String"
+        },
+        "serverfarms_ASP_rgredispoc_8161_externalid": {
+            "defaultValue": "/subscriptions/b8c7d821-4fbb-4089-8978-b966512a6a45/resourceGroups/rg-redis-poc/providers/Microsoft.Web/serverfarms/ASP-rgredispoc-8161",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2018-11-01",
+            "name": "[parameters('sites_bnkfntest2_name')]",
+            "location": "Central US",
+            "tags": {
+                "CostCenter": "ContosoIT"
+            },
+            "kind": "functionapp",
+            "identity": {
+                "principalId": "efe7a26f-01ef-404f-be5a-1e4f9365f674",
+                "tenantId": "1f37530a-d3ea-4420-98c6-60310dcc1a7a",
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "enabled": true,
+                "hostNameSslStates": [
+                    {
+                        "name": "[concat(parameters('sites_bnkfntest2_name'), '.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Standard"
+                    },
+                    {
+                        "name": "[concat(parameters('sites_bnkfntest2_name'), '.scm.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Repository"
+                    }
+                ],
+                "serverFarmId": "[parameters('serverfarms_ASP_rgredispoc_8161_externalid')]",
+                "reserved": false,
+                "isXenon": false,
+                "hyperV": false,
+                "siteConfig": {
+                    "numberOfWorkers": 1,
+                    "alwaysOn": false,
+                    "http20Enabled": false
+                },
+                "scmSiteAlsoStopped": false,
+                "clientAffinityEnabled": false,
+                "clientCertEnabled": false,
+                "hostNamesDisabled": false,
+                "containerSize": 1536,
+                "dailyMemoryTimeQuota": 0,
+                "httpsOnly": false,
+                "redundancyMode": "None"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_bnkfntest2_name'), '/web')]",
+            "location": "Central US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_bnkfntest2_name'))]"
+            ],
+            "tags": {
+                "CostCenter": "ContosoIT"
+            },
+            "properties": {
+                "numberOfWorkers": 1,
+                "defaultDocuments": [
+                    "Default.htm",
+                    "Default.html",
+                    "Default.asp",
+                    "index.htm",
+                    "index.html",
+                    "iisstart.htm",
+                    "default.aspx",
+                    "index.php"
+                ],
+                "netFrameworkVersion": "v4.0",
+                "phpVersion": "5.6",
+                "requestTracingEnabled": false,
+                "remoteDebuggingEnabled": false,
+                "remoteDebuggingVersion": "VS2019",
+                "httpLoggingEnabled": false,
+                "logsDirectorySizeLimit": 35,
+                "detailedErrorLoggingEnabled": false,
+                "publishingUsername": "$bnkfntest2",
+                "azureStorageAccounts": {},
+                "scmType": "None",
+                "use32BitWorkerProcess": true,
+                "webSocketsEnabled": false,
+                "alwaysOn": false,
+                "managedPipelineMode": "Integrated",
+                "virtualApplications": [
+                    {
+                        "virtualPath": "/",
+                        "physicalPath": "site\\wwwroot",
+                        "preloadEnabled": false
+                    }
+                ],
+                "loadBalancing": "LeastRequests",
+                "experiments": {
+                    "rampUpRules": []
+                },
+                "autoHealEnabled": false,
+                "localMySqlEnabled": false,
+                "managedServiceIdentityId": 10172,
+                "ipSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 1,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 1,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictionsUseMain": false,
+                "http20Enabled": false,
+                "minTlsVersion": "1.2",
+                "ftpsState": "AllAllowed",
+                "reservedInstanceCount": 0
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_bnkfntest2_name'), '/c4c44c411f204fb1af664797c7f20c15')]",
+            "location": "Central US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_bnkfntest2_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "ZipDeploy",
+                "message": "Created via a push deployment",
+                "start_time": "2021-06-06T21:08:41.5925407Z",
+                "end_time": "2021-06-06T21:08:49.7303633Z",
+                "active": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/functions",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_bnkfntest2_name'), '/fnBlobCopySrcToDest')]",
+            "location": "Central US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_bnkfntest2_name'))]"
+            ],
+            "properties": {
+                "script_root_path_href": "https://bnkfntest2.azurewebsites.net/admin/vfs/site/wwwroot/fnBlobCopySrcToDest/",
+                "script_href": "https://bnkfntest2.azurewebsites.net/admin/vfs/site/wwwroot/fnBlobCopySrcToDest/index.js",
+                "config_href": "https://bnkfntest2.azurewebsites.net/admin/vfs/site/wwwroot/fnBlobCopySrcToDest/function.json",
+                "href": "https://bnkfntest2.azurewebsites.net/admin/functions/fnBlobCopySrcToDest",
+                "config": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/functions",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_bnkfntest2_name'), '/fnBlobImportRedis')]",
+            "location": "Central US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_bnkfntest2_name'))]"
+            ],
+            "properties": {
+                "script_root_path_href": "https://bnkfntest2.azurewebsites.net/admin/vfs/site/wwwroot/fnBlobImportRedis/",
+                "script_href": "https://bnkfntest2.azurewebsites.net/admin/vfs/site/wwwroot/fnBlobImportRedis/index.js",
+                "config_href": "https://bnkfntest2.azurewebsites.net/admin/vfs/site/wwwroot/fnBlobImportRedis/function.json",
+                "href": "https://bnkfntest2.azurewebsites.net/admin/functions/fnBlobImportRedis",
+                "config": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/functions",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_bnkfntest2_name'), '/fnHttpExportRedis')]",
+            "location": "Central US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_bnkfntest2_name'))]"
+            ],
+            "properties": {
+                "script_root_path_href": "https://bnkfntest2.azurewebsites.net/admin/vfs/site/wwwroot/fnHttpExportRedis/",
+                "script_href": "https://bnkfntest2.azurewebsites.net/admin/vfs/site/wwwroot/fnHttpExportRedis/index.js",
+                "config_href": "https://bnkfntest2.azurewebsites.net/admin/vfs/site/wwwroot/fnHttpExportRedis/function.json",
+                "href": "https://bnkfntest2.azurewebsites.net/admin/functions/fnHttpExportRedis",
+                "config": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/functions",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_bnkfntest2_name'), '/fnHttpGetSas')]",
+            "location": "Central US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_bnkfntest2_name'))]"
+            ],
+            "properties": {
+                "script_root_path_href": "https://bnkfntest2.azurewebsites.net/admin/vfs/site/wwwroot/fnHttpGetSas/",
+                "script_href": "https://bnkfntest2.azurewebsites.net/admin/vfs/site/wwwroot/fnHttpGetSas/index.js",
+                "config_href": "https://bnkfntest2.azurewebsites.net/admin/vfs/site/wwwroot/fnHttpGetSas/function.json",
+                "href": "https://bnkfntest2.azurewebsites.net/admin/functions/fnHttpGetSas",
+                "config": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/functions",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_bnkfntest2_name'), '/fnTimerExportRedis')]",
+            "location": "Central US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_bnkfntest2_name'))]"
+            ],
+            "properties": {
+                "script_root_path_href": "https://bnkfntest2.azurewebsites.net/admin/vfs/site/wwwroot/fnTimerExportRedis/",
+                "script_href": "https://bnkfntest2.azurewebsites.net/admin/vfs/site/wwwroot/fnTimerExportRedis/index.js",
+                "config_href": "https://bnkfntest2.azurewebsites.net/admin/vfs/site/wwwroot/fnTimerExportRedis/function.json",
+                "href": "https://bnkfntest2.azurewebsites.net/admin/functions/fnTimerExportRedis",
+                "config": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/functions",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_bnkfntest2_name'), '/HttpTrigger1')]",
+            "location": "Central US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_bnkfntest2_name'))]"
+            ],
+            "properties": {
+                "script_root_path_href": "https://bnkfntest2.azurewebsites.net/admin/vfs/site/wwwroot/HttpTrigger1/",
+                "script_href": "https://bnkfntest2.azurewebsites.net/admin/vfs/site/wwwroot/HttpTrigger1/index.js",
+                "config_href": "https://bnkfntest2.azurewebsites.net/admin/vfs/site/wwwroot/HttpTrigger1/function.json",
+                "href": "https://bnkfntest2.azurewebsites.net/admin/functions/HttpTrigger1",
+                "config": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/hostNameBindings",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_bnkfntest2_name'), '/', parameters('sites_bnkfntest2_name'), '.azurewebsites.net')]",
+            "location": "Central US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_bnkfntest2_name'))]"
+            ],
+            "properties": {
+                "siteName": "bnkfntest2",
+                "hostNameType": "Verified"
+            }
+        }
+    ]
+}

@@ -152,6 +152,7 @@ resource fnApp 'Microsoft.Web/sites@2021-01-01' = {
           name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
           value: 'DefaultEndpointsProtocol=https;AccountName=${storageCUS.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(storageCUS.id, storageCUS.apiVersion).keys[0].value}'
         }
+      
         // WEBSITE_CONTENTSHARE will also be auto-generated - https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings#website_contentshare
         // WEBSITE_RUN_FROM_PACKAGE will be set to 1 by func azure functionapp publish
       ]
