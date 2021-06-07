@@ -21,16 +21,21 @@ function ExportRedis(context) {
 
     // this block does the export call to redisEnterprise:
     var timeStamp = new Date().toISOString();
-    var blobname = process.env.SRC_CLUSTER_NAME + "_" + count;
+    var blobname = process.env.SRC_CLUSTER_NAME + "-" + count;
     var hostUrl = "https://management.azure.com"+process.env.SRC_EXPORT_PATH;
-    var sas = generateSasToken(context, process.env.SRC_STORAGE, 'exports', blobname,  "rwadl");
+    var sas = generateSasToken(context, process.env.SRC_STORAGE, 'exports', blobname,  "rwa");
 
-    context.log("sas.uri: " + sas.uri);
-    context.log("sas.token: " + sas.token);
 
+    context.log("  > blobname: " + blobname);
+    context.log("  > host: " + hostUrl);
+    context.log("  > sas.uri: " + sas.uri);
+    context.log("  > sas.token: " + sas.token);
+    
     data = JSON.stringify({
         sasUri: sas.uri
     }); 
+
+    context.log("  > data: " + data);
 
     const options = {
         hostname: hostUrl,
@@ -42,26 +47,26 @@ function ExportRedis(context) {
         }
     }
 
-    const req = https.request(options, res => {
+    const myReq = https.request(options, res => {
 
-        context.log(`statusCode: ${res.statusCode}`)
+        context.log('  > statusCode: ${res.statusCode}')
         
         res.on('data', d => {
             process.stdout.write(d)
         })
     })
     
-    req.on('success', rc => {
-        context.log('['+count+']---> fnHttpExportRedis() : Request SUCCESS Complete!')
+    myReq.on('success', rc => {
+        context.log('['+count+']---> fnHttpExportRedis() : Request SUCCESS!')
+        myReq.end()
     })
 
-    req.on('error', error => {
-        console.log(error);
-        context.log(error);
+    myReq.on('error', error => {
+        console.log(" **ERROR** > " + error);
+        context.log(" **ERROR** > " + error);
     })
       
-    req.write(data)
-    req.end()
+    myReq.write(data)
     context.log('['+count+']---> fnHttpExportRedis() - http Request sent');
 }
 
