@@ -8,11 +8,6 @@ param($Request, $TriggerMetadata)
 Write-Host "---> fnHttpRedisExportPS() - START: PowerShell HTTP trigger function processed a request."
 $ErrorActionPreference = 'Stop'
 
-write-host "Cluster: $env:SRC_CLUSTER_NAME"
-Write-host "Storage: $env:SRC_STORAGE"
-set-variable -name "container" -value "exports"
-set-variable -name "rgname" -value "rg-redis-poc"
-
 #We need at least one Storage Account Key
 $keys = Get-AzStorageAccountKey -Name $env:SRC_STORAGE_NAME -ResourceGroupName $env:RESOURCE_GROUP
 
