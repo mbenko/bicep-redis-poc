@@ -146,7 +146,11 @@ resource fnApp 'Microsoft.Web/sites@2021-01-01' = {
         }
         {
           'name': 'FUNCTIONS_WORKER_RUNTIME'
-          'value': 'node'
+          'value': 'powershell'
+        }
+        {
+          'name': 'WEBSITE_NODE_DEFAULT_VERSION'
+          'value': '~14'
         }
         {
           name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'

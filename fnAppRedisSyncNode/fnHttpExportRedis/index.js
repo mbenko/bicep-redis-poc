@@ -2,6 +2,8 @@
 var count = 0;
 const azure = require('azure-storage');
 const https = require('https');
+const redis = require('@azure/arm-redisenterprisecache');
+const { RedisClient } = require('redis');
 
 module.exports = async function (context, req) {
     var timeStamp = new Date().toISOString();
@@ -25,7 +27,6 @@ function ExportRedis(context) {
     var hostUrl = "https://management.azure.com"+process.env.SRC_EXPORT_PATH;
     var sas = generateSasToken(context, process.env.SRC_STORAGE, 'exports', blobname,  "rwa");
 
-
     context.log("  > blobname: " + blobname);
     context.log("  > host: " + hostUrl);
     context.log("  > sas.uri: " + sas.uri);
@@ -36,6 +37,12 @@ function ExportRedis(context) {
     }); 
 
     context.log("  > data: " + data);
+
+    const redisOpt =  {
+        
+    }
+
+    const redisClient = new RedisClient(redisOpt)
 
     const options = {
         hostname: hostUrl,

@@ -1,0 +1,11 @@
+{
+  "bindings": [
+    {
+      "name": "InputBlob",
+      "type": "blobTrigger",
+      "direction": "in",
+      "path": "imports/{name}",
+      "connection": "DEST_STORAGE"
+    }
+  ]
+}
