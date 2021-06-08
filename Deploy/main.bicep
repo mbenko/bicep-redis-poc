@@ -117,6 +117,14 @@ resource fnApp 'Microsoft.Web/sites@2021-01-01' = {
           value: 'DefaultEndpointsProtocol=https;AccountName=${storageEUS.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(storageEUS.id, storageEUS.apiVersion).keys[0].value}'
         }
         {
+          name: 'SRC_STORAGE_NAME'
+          value: '${storageCUS.name}'
+        }
+        {
+          name: 'DEST_STORAGE_NAME'
+          value: '${storageEUS.name}'
+        }
+        {
           name: 'RESOURCE_GROUP'
           value: resourceGroup().name
         }
