@@ -23,7 +23,7 @@ New-AzStorageContainer -Context $context -Name $env:SRC_CONTAINER -errorAction S
 $token = New-AzStorageContainerSASToken -Context $context -Name $env:SRC_CONTAINER -Permission rwd
 write-host "Token: $token"
 
-Export-AzRedisEnterpriseCache -ResourceGroupName $rgname -Name $env:SRC_CLUSTER_NAME -SasUri "https://$env:SRC_STORAGE_NAME.blob.core.windows.net/$env:SRC_CONTAINER$token;$src_key"
+Export-AzRedisEnterpriseCache -ResourceGroupName $env:RESOURCE_GROUP -Name $env:SRC_CLUSTER_NAME -SasUri "https://$env:SRC_STORAGE_NAME.blob.core.windows.net/$env:SRC_CONTAINER$token;$src_key"
 
 
 $body = "---> fnHttpRedisExportPS() DONE!  Export complete to $env:SRC_STORAGE_NAME - $container"
