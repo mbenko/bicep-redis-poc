@@ -98,7 +98,11 @@ resource fnApp 'Microsoft.Web/sites@2021-01-01' = {
     httpsOnly: true
     serverFarmId: hostingPlan.id
     clientAffinityEnabled: true
+    
     siteConfig: {
+      acrUseManagedIdentityCreds: true
+      
+      powerShellVersion: '~7'
       appSettings: [
         {
           'name': 'APPINSIGHTS_INSTRUMENTATIONKEY'
@@ -167,10 +171,6 @@ resource fnApp 'Microsoft.Web/sites@2021-01-01' = {
         {
           'name': 'FUNCTIONS_WORKER_RUNTIME'
           'value': 'powershell'
-        }
-        {
-          'name': 'WEBSITE_NODE_DEFAULT_VERSION'
-          'value': '~14'
         }
         {
           name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
